@@ -35,10 +35,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gems-
 
-    - run:
-      - ls
-      - ls ..
-      - pwd
+    - run: pwd && ls && ls ..
     - name: Publish to GitHub
       uses:  helaili/jekyll-action@64b759fc0e18682ff47a0522072df02762a76af2
       with:
@@ -46,5 +43,5 @@ jobs:
         target_path: docs
         build_only: true
         jekyll_build_options: ${{ env.EXTRA_BUILD_ARGS }}
-    - run: ls
+    - run: pwd && ls && ls ..
     
