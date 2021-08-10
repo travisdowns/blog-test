@@ -40,7 +40,7 @@ jobs:
       uses:  helaili/jekyll-action@64b759fc0e18682ff47a0522072df02762a76af2
       with:
         target_branch: gh-pages
-        target_path: workspace/_site
+        target_path: ../workspace/_site
         build_only: true
         jekyll_build_options: ${{ env.EXTRA_BUILD_ARGS }}
     - run: pwd && echo "----" && ls && echo "----" && ls .. && echo "----" && ls ../.. && echo "----"
