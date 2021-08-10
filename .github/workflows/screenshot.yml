@@ -1,7 +1,8 @@
 name: Screenshot Site
 on:
   push:
-    branches: [ master ]
+    branches:
+      - screen-wip
 
 jobs:
   jekyll:
