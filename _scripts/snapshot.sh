@@ -53,18 +53,25 @@ port=$(lsof -P -a -p$SERVERPID -itcp | grep -o 'TCP \*:[0-9]*' | grep -o '[0-9]*
 echo "http-server seems to be up on port $port"
 
 echo "repo           : ${SNAPSHOT_REPO:=$(git config --get remote.origin.url)}"
-if [[ $SNAPSHOT_REPO_AUTH ]]; then
-    echo "repo auth      : (set)";
-else
-    echo "repo auth      : (unset)";
-fi
 echo "branch         : ${SNAPSHOT_BRANCH:=screenshots}"
 echo "Github user    : ${SNAPSHOT_USER-(unset)}"
 echo "Github email   : ${SNAPSHOT_EMAIL-(unset)}"
 echo "Commit message : ${SNAPSHOT_COMMIT_MSG:=screenshots}"
 
+# When using GitHub actions, we won't by default have permissions to push to the
+# target repo unless we provide auth info, which can be the action-provided 
+# GITHUB_TOKEN if the action is triggered by the same repo we want to save
+# the screenshots to
+if [[ $SNAPSHOT_REPO_AUTH ]]; then
+    echo "repo auth      : (set)";
+    FULL_REPO="${SNAPSHOT_REPO_AUTH}@${SNAPSHOT_REPO}"
+else
+    echo "repo auth      : (unset)";
+    FULL_REPO=$SNAPSHOT_REPO
+fi
+
 rm -rf dest-repo
-git clone "$SNAPSHOT_REPO" dest-repo --single-branch --branch "$SNAPSHOT_BRANCH"
+git clone "$FULL_REPO" dest-repo --single-branch --branch "$SNAPSHOT_BRANCH"
 
 
 if [[ "${SKIP_SNAP-0}" -eq 0 ]]; then

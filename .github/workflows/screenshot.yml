@@ -42,5 +42,6 @@ jobs:
       run: >
         SNAPSHOT_USER=${GITHUB_ACTOR}
         SNAPSHOT_EMAIL=${GITHUB_ACTOR}@users.noreply.github.com
+        SNAPSHOT_REPO_AUTH=${GITHUB_ACTOR}:${secrets.GITHUB_TOKEN}
         _scripts/snapshot.sh
     
