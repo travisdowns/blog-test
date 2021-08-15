@@ -63,7 +63,7 @@ git clone "$SNAPSHOT_REPO" dest-repo --single-branch --branch "$SNAPSHOT_BRANCH"
 
 
 if [[ "${SKIP_SNAP-0}" -eq 0 ]]; then
-    "$(npm bin)/snap-site" --site="$SITE_ABS" --out=dest-repo --excludes=debug.html
+    "$(npm bin)/snap-site" --site="$SITE_ABS" --out=dest-repo --excludes=debug.html '--include=**/vector-inc.html'
 fi
 
 set -x
