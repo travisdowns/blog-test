@@ -39,5 +39,8 @@ jobs:
         jekyll_build_options: ${{ env.EXTRA_BUILD_ARGS }}
 
     - name: Take and publish screenshots
-      run: _scripts/snapshot.sh
+      run: >
+        SNAPSHOT_USER=${GITHUB_ACTOR}
+        SNAPSHOT_EMAIL=${GITHUB_ACTOR}@users.noreply.github.com
+        _scripts/snapshot.sh
     
