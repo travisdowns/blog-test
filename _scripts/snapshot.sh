@@ -78,7 +78,7 @@ if [[ $SNAPSHOT_EMAIL ]]; then
 fi
 $gitcmd add .
 $gitcmd commit --allow-empty -m "$SNAPSHOT_COMMIT_MSG"
-$gitcmd push "$SNAPSHOT_BRANCH":"$SNAPSHOT_BRANCH"
+$gitcmd push
 
 cd -
 # rm -rf "$WORKDIR"
