@@ -66,6 +66,8 @@ if [[ "${SKIP_SNAP-0}" -eq 0 ]]; then
     "$(npm bin)/snap-site" --site="$SITE_ABS" --out=dest-repo --excludes=debug.html
 fi
 
+set -x
+
 gitcmd="git -C dest-repo"
 
 if [[ $SNAPSHOT_USER ]]; then
