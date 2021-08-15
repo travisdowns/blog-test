@@ -67,7 +67,8 @@ if [[ $SNAPSHOT_REPO_AUTH ]]; then
     # we need to inject the auth after the protocol, so 
     # https://example.com/repo becomes https://user:token@example.com/repo
     # and currently we only handle https:// URLs
-    FULL_REPO="${SNAPSHOT_REPO/'https://'/}"
+    FULL_REPO=${SNAPSHOT_REPO/'https://'/"https://${SNAPSHOT_REPO_AUTH}@"}
+    echo "FR: $FULL_REPO"
 else
     echo "repo auth      : (unset)";
     FULL_REPO=$SNAPSHOT_REPO
