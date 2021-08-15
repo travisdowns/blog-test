@@ -4,10 +4,6 @@
 
 set -euo pipefail
 
-echov () {
-    eval 'echo $1=$'"$1"
-}
-
 cleanup() {
     if [[ -n ${SERVERPID-} ]]; then
         echo "Killing http-server pid $SERVERPID"
@@ -19,8 +15,9 @@ trap cleanup EXIT
 
 SITE_REL=${1-./_site}
 SITE_ABS=$(readlink -f "$SITE_REL")
-echov SITE_ABS
-WORKDIR=$(readlink -f ./snapshot-workdir)
+WORKDIR=$(readlink -f ./_snapshot-workdir)
+
+echo "SITE_ABS=$SITE_ABS"
 
 if [[ ! -d "$SITE_ABS" ]]; then
     echo "site directory does not exist: $SITE_ABS"
@@ -31,7 +28,7 @@ mkdir -p "$WORKDIR"
 cd "$WORKDIR"
 
 npm init -y
-npm install "github:travisdowns/snap-site" http-server
+npm install "github:travisdowns/snap-site#master" http-server
 
 NODEBIN=./node_modules/.bin
 
@@ -62,13 +59,12 @@ echo "Commit message : ${SNAPSHOT_COMMIT_MSG:=screenshots}"
 # target repo unless we provide auth info, which can be the action-provided 
 # GITHUB_TOKEN if the action is triggered by the same repo we want to save
 # the screenshots to
-if [[ $SNAPSHOT_REPO_AUTH ]]; then
+if [[ -n ${SNAPSHOT_REPO_AUTH-} ]]; then
     echo "repo auth      : (set)";
     # we need to inject the auth after the protocol, so 
     # https://example.com/repo becomes https://user:token@example.com/repo
     # and currently we only handle https:// URLs
     FULL_REPO=${SNAPSHOT_REPO/'https://'/"https://${SNAPSHOT_REPO_AUTH}@"}
-    echo "FR: $FULL_REPO"
 else
     echo "repo auth      : (unset)";
     FULL_REPO=$SNAPSHOT_REPO
@@ -78,23 +74,34 @@ rm -rf dest-repo
 git clone "$FULL_REPO" dest-repo --single-branch --branch "$SNAPSHOT_BRANCH"
 
 
-if [[ "${SKIP_SNAP-0}" -eq 0 ]]; then
-    "$(npm bin)/snap-site" --site="$SITE_ABS" --out=dest-repo --excludes=debug.html '--include=**/vector-inc.html'
+if [[ "${SKIP_SNAP:-0}" -eq 0 ]]; then
+    "$(npm bin)/snap-site" --site="$SITE_ABS" --out=dest-repo --excludes=debug.html '--include=**/*.html'
 fi
-
-set -x
 
 gitcmd="git -C dest-repo"
 
-if [[ $SNAPSHOT_USER ]]; then
+if [[ -n ${SNAPSHOT_USER+x} ]]; then
     $gitcmd config user.name "$SNAPSHOT_USER"
 fi
-if [[ $SNAPSHOT_EMAIL ]]; then
+if [[ -n ${SNAPSHOT_EMAIL+x} ]]; then
     $gitcmd config user.email "$SNAPSHOT_EMAIL"
 fi
 $gitcmd add .
-$gitcmd commit --allow-empty -m "$SNAPSHOT_COMMIT_MSG"
-$gitcmd push
+
+# determine the number of files modified and added
+TOTAL_COUNT=$($gitcmd diff --name-only --cached                 | wc -l)
+  MOD_COUNT=$($gitcmd diff --name-only --cached --diff-filter=M | wc -l)
+  NEW_COUNT=$($gitcmd diff --name-only --cached --diff-filter=A | wc -l)
+
+echo "Files to commit: $TOTAL_COUNT ($MOD_COUNT modified, $NEW_COUNT new)"
+
+if [[ $TOTAL_COUNT -gt 0 ]]; then
+    echo "Comitting updated screenshots"
+    $gitcmd commit --allow-empty -m "$SNAPSHOT_COMMIT_MSG"
+    $gitcmd push
+else
+    echo "Nothing new to commit..."
+fi
 
 cd -
 # rm -rf "$WORKDIR"
