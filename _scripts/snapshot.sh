@@ -64,7 +64,10 @@ echo "Commit message : ${SNAPSHOT_COMMIT_MSG:=screenshots}"
 # the screenshots to
 if [[ $SNAPSHOT_REPO_AUTH ]]; then
     echo "repo auth      : (set)";
-    FULL_REPO="${SNAPSHOT_REPO_AUTH}@${SNAPSHOT_REPO}"
+    # we need to inject the auth after the protocol, so 
+    # https://example.com/repo becomes https://user:token@example.com/repo
+    # and currently we only handle https:// URLs
+    FULL_REPO="${SNAPSHOT_REPO/'https://'/}"
 else
     echo "repo auth      : (unset)";
     FULL_REPO=$SNAPSHOT_REPO
