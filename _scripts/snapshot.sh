@@ -53,6 +53,11 @@ port=$(lsof -P -a -p$SERVERPID -itcp | grep -o 'TCP \*:[0-9]*' | grep -o '[0-9]*
 echo "http-server seems to be up on port $port"
 
 echo "repo           : ${SNAPSHOT_REPO:=$(git config --get remote.origin.url)}"
+if [[ $SNAPSHOT_REPO_AUTH ]]; then
+    echo "repo auth      : (set)";
+else
+    echo "repo auth      : (unset)";
+fi
 echo "branch         : ${SNAPSHOT_BRANCH:=screenshots}"
 echo "Github user    : ${SNAPSHOT_USER-(unset)}"
 echo "Github email   : ${SNAPSHOT_EMAIL-(unset)}"
