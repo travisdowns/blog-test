@@ -22,11 +22,6 @@ jobs:
           echo "EXTRA_BUILD_ARGS=--config _config.yml,_config-test.yml" >> $GITHUB_ENV
         fi
 
-    - name: echo vars
-      run: |
-        echo "EBA=$EXTRA_BUILD_ARGS"
-        echo "EBA=${{ env.EXTRA_BUILD_ARGS }}"
-
     # Use GitHub Actions' cache to shorten build times and decrease load on servers
     - uses: actions/cache@v2
       with:
@@ -35,13 +30,5 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gems-
 
-    - run: pwd && ls && ls ..
-    - name: Publish to GitHub
-      uses:  helaili/jekyll-action@64b759fc0e18682ff47a0522072df02762a76af2
-      with:
-        target_branch: gh-pages
-        target_path: ../workspace/_site
-        build_only: true
-        jekyll_build_options: ${{ env.EXTRA_BUILD_ARGS }}
-    - run: pwd && echo "----" && ls && echo "----" && ls .. && echo "----" && ls ../.. && echo "----"
-    
+    - name: Take and publish screenshots
+      run: _scripts/snapshot.sh
