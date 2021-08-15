@@ -54,8 +54,8 @@ echo "http-server seems to be up on port $port"
 
 echo "repo           : ${SNAPSHOT_REPO:=$(git config --get remote.origin.url)}"
 echo "branch         : ${SNAPSHOT_BRANCH:=screenshots}"
-echo "Github user    : ${SNAPSHOT_USER}"
-echo "Github email   : ${SNAPSHOT_EMAIL}"
+echo "Github user    : ${SNAPSHOT_USER-(unset)}"
+echo "Github email   : ${SNAPSHOT_EMAIL-(unset)}"
 echo "Commit message : ${SNAPSHOT_COMMIT_MSG:=screenshots}"
 
 rm -rf dest-repo
