@@ -41,6 +41,8 @@ jobs:
     - name: Take and publish screenshots
       run: _scripts/snapshot.sh
       env:
+        SNAPSHOT_REPO: https://github.com/travisdowns/blog-screenshots
+        SNAPSHOT_BRANCH: master
         SNAPSHOT_USER: ${{ github.actor }}
         SNAPSHOT_EMAIL: ${{ github.actor }}@users.noreply.github.com
         SNAPSHOT_REPO_AUTH: ${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}
