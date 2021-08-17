@@ -42,6 +42,7 @@ jobs:
       run: _scripts/snapshot.sh
       env:
         SNAPSHOT_REPO: https://github.com/travisdowns/blog-screenshots
+        SNAPSHOT_REPO_AUTH: ${{ secrets.SNAPSHOT_REPO_AUTH }}
         SNAPSHOT_BRANCH: master
         SNAPSHOT_USER: ${{ github.actor }}
         SNAPSHOT_EMAIL: ${{ github.actor }}@users.noreply.github.com
