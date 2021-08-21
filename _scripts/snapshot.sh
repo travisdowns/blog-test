@@ -24,8 +24,12 @@ if [[ ! -d "$SITE_ABS" ]]; then
     exit 1
 fi
 
+pwd && ls -l
+
 mkdir -p "$WORKDIR"
 cd "$WORKDIR"
+
+pwd && ls -l
 
 npm init -y
 npm install "github:travisdowns/snap-site#master" http-server
