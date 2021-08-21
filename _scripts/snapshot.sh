@@ -75,7 +75,7 @@ git clone "$FULL_REPO" dest-repo --single-branch --branch "$SNAPSHOT_BRANCH"
 
 if [[ "${SKIP_SNAP:-0}" -eq 0 ]]; then
     "$(npm bin)/snap-site" --site-dir="$SITE_ABS" --out-dir=dest-repo \
-        --host-port="localhost:$port" --exclude='**/debug-page.html' --include='**/*.html'
+        --host-port="localhost:$port" --exclude='**/debug-pages.html' --include='**/*.html'
 fi
 
 gitcmd="git -C dest-repo"
