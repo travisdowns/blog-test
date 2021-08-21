@@ -24,15 +24,8 @@ if [[ ! -d "$SITE_ABS" ]]; then
     exit 1
 fi
 
-pwd && ls -l
-
 mkdir -p "$WORKDIR"
 cd "$WORKDIR"
-
-pwd && ls -l
-echo "======="
-ls -l "$SITE_ABS"
-echo "======="
 
 npm init -y
 npm install "github:travisdowns/snap-site#master" http-server
@@ -93,6 +86,7 @@ fi
 if [[ -n ${SNAPSHOT_EMAIL+x} ]]; then
     $gitcmd config user.email "$SNAPSHOT_EMAIL"
 fi
+
 $gitcmd add .
 
 # determine the number of files modified and added
@@ -100,6 +94,9 @@ total_count=$($gitcmd diff --name-only --cached                 | wc -l)
   mod_count=$($gitcmd diff --name-only --cached --diff-filter=M | wc -l)
   new_count=$($gitcmd diff --name-only --cached --diff-filter=A | wc -l)
 
+echo "=========== files ============="
+$gitcmd diff --name-only --cached
+echo "==============================="
 echo "Files to commit: $total_count ($mod_count modified, $new_count new)"
 
 if [[ $total_count -gt 0 ]]; then
