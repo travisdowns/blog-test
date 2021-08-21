@@ -30,6 +30,9 @@ mkdir -p "$WORKDIR"
 cd "$WORKDIR"
 
 pwd && ls -l
+echo "======="
+ls -l "$SITE_ABS"
+echo "======="
 
 npm init -y
 npm install "github:travisdowns/snap-site#master" http-server
