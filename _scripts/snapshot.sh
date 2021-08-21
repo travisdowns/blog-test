@@ -73,9 +73,9 @@ fi
 rm -rf dest-repo
 git clone "$FULL_REPO" dest-repo --single-branch --branch "$SNAPSHOT_BRANCH"
 
-
 if [[ "${SKIP_SNAP:-0}" -eq 0 ]]; then
-    "$(npm bin)/snap-site" --site="$SITE_ABS" --out=dest-repo --excludes=debug.html '--include=**/*.html'
+    "$(npm bin)/snap-site" --site-dir="$SITE_ABS" --out-dir=dest-repo \
+        --host-port="localhost:$port" --excludes='**/debug-page.html' '--include=**/*.html'
 fi
 
 gitcmd="git -C dest-repo"
@@ -89,13 +89,13 @@ fi
 $gitcmd add .
 
 # determine the number of files modified and added
-TOTAL_COUNT=$($gitcmd diff --name-only --cached                 | wc -l)
-  MOD_COUNT=$($gitcmd diff --name-only --cached --diff-filter=M | wc -l)
-  NEW_COUNT=$($gitcmd diff --name-only --cached --diff-filter=A | wc -l)
+total_count=$($gitcmd diff --name-only --cached                 | wc -l)
+  mod_count=$($gitcmd diff --name-only --cached --diff-filter=M | wc -l)
+  new_count=$($gitcmd diff --name-only --cached --diff-filter=A | wc -l)
 
-echo "Files to commit: $TOTAL_COUNT ($MOD_COUNT modified, $NEW_COUNT new)"
+echo "Files to commit: $total_count ($mod_count modified, $new_count new)"
 
-if [[ $TOTAL_COUNT -gt 0 ]]; then
+if [[ $total_count -gt 0 ]]; then
     echo "Comitting updated screenshots"
     $gitcmd commit --allow-empty -m "$SNAPSHOT_COMMIT_MSG"
     $gitcmd push
